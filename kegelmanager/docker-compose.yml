@@ -5,4 +5,4 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./kegelmanager.db:/app/kegelmanager.db
+      - ./data:/app/data
