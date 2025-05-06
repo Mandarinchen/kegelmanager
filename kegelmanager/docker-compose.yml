@@ -1,16 +1,8 @@
-version: "3.8"
+version: '3'
 services:
-  backend:
-    build: ./backend
+  kegelmanager:
+    build: .
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
-    environment:
-      - DATABASE_URL=sqlite:///./kegelmanager.db
-  frontend:
-    build: ./frontend
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
+      - ./kegelmanager.db:/app/kegelmanager.db

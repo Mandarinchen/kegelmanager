@@ -1,23 +1,17 @@
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+from . import models, schemas, database
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from routers import players
-from database import Base, engine
-
-Base.metadata.create_all(bind=engine)
-
+models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+def get_db():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-app.include_router(players.router)
-
-@app.get("/")
-def root():
-    return {"message": "Kegelmanager läuft"}
+@app.get("/players/", response_model=list[schemas.PlayerSchema])
+def read_players(db: Session = Depends(get_db)):
+    return db.query(models.Player).all()
